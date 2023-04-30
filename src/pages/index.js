@@ -1,6 +1,7 @@
 import Head from "next/head";
 import { Inter } from "next/font/google";
 import { PostCard, PostWidget } from "../../components";
+import { getPost } from "../../services";
 
 const inter = Inter({ subsets: ["latin"] });
 const posts = [
@@ -16,7 +17,7 @@ const posts = [
   },
 ];
 
-export default function Home() {
+export default function Home({posts}) {
   return (
     <div className="container mx-auto px-10 ">
       <Head>
@@ -28,7 +29,8 @@ export default function Home() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12  ">
         <div className="lg:col-span-8 col-span-1">
           {posts.map((post) => (
-            <PostCard key={post.id} post={post} />
+            <PostCard key={post.node.author.id} post={post.node} />
+            
           ))}
         </div>
       </div>
@@ -39,4 +41,12 @@ export default function Home() {
       </div>
     </div>
   );
+}
+
+export async function getStaticProps() {
+  const posts = (await getPost()) || [];
+
+  return {
+    props: {posts}
+  }
 }
